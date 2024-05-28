@@ -51,18 +51,18 @@ void main(uint3 tid: SV_DispatchThreadId)
 {
     Target[tid.xy] = float4(1,0,0,1);
                       
-    //for(int index=0; index < 8; index++)
-    //for(int index=0; index < asuint(RectangleBuffer[0].r); index++)
-    //{
-    //    float4 rectangle = RectangleBuffer[1 + index];
-    //    rectangle.x += ConfigBuffer.DeltaX;
-    //    rectangle.y += ConfigBuffer.DeltaY;
-    //                  
-    //    if(tid.x >= rectangle.x && tid.y >= rectangle.y && tid.x < rectangle.x + rectangle.z && tid.y < rectangle.y + rectangle.w)
-    //    {
-    //        Target[tid.xy] = float4(RectangleBuffer[0].yzw,1);
-    //    }
-    //}
+    for(int index=0; index < 8; index++)
+    for(int index=0; index < asuint(RectangleBuffer[0].r); index++)
+    {
+        float4 rectangle = RectangleBuffer[1 + index];
+        rectangle.x += ConfigBuffer.DeltaX;
+        rectangle.y += ConfigBuffer.DeltaY;
+                      
+        if(tid.x >= rectangle.x && tid.y >= rectangle.y && tid.x < rectangle.x + rectangle.z && tid.y < rectangle.y + rectangle.w)
+        {
+            Target[tid.xy] = float4(RectangleBuffer[0].yzw,1);
+        }
+    }
 }
 
 """)
@@ -70,13 +70,13 @@ void main(uint3 tid: SV_DispatchThreadId)
 configBuffer = Buffer(2*4,HEAP_UPLOAD)
 
 glfw.init()
-#non vogliamo opengl perchè ce lo gestiamo noi l'accesso alla gpu
+#disable default opengl gpu access
 glfw.window_hint(glfw.CLIENT_API, glfw.NO_API)
 
 target = Texture2D(512,512, B8G8R8A8_UNORM)
 compute = Compute(shader, uav=[target], srv=[new_fast_buffer], cbv=[configBuffer])
 
-window = glfw.create_window(target.width,target.height, "Hello", None, None)
+window = glfw.create_window(target.width,target.height, "Simple draw rectangles", None, None)
 
 swapchain = Swapchain(glfw.get_win32_window(window), B8G8R8A8_UNORM,2)
 
