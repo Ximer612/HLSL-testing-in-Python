@@ -41,13 +41,10 @@ def upload_colors():
     return fast_buffer
     
 
-add_rectangle_buffer(1,0,0,     250,0,      25,25)
-add_rectangle_buffer(0,1,1,     250,50,     10,10)
-add_rectangle_buffer(0,0.5,1,   200,100,    30,10)
-add_rectangle_buffer(0.5,0,1,   200,150,    8,10)
-add_rectangle_buffer(0,0,1,     300,200,    200,100)
-add_rectangle_buffer(1,0,1,     100,200,    10,100)
-add_rectangle_buffer(0,0,0,     200,300,    200,200)
+add_rectangle_buffer(1,0,0, 0,0,    240,240)
+add_rectangle_buffer(0,1,0, 250,0,  240,240)
+add_rectangle_buffer(0,0,1, 0,250,  240,240)
+add_rectangle_buffer(1,0,1, 250,250,240,240)
 
 rectangles_fast_buffer = upload_rectangles(rectangles,0.5,0.5,0.5)
 colors_fast_buffer = upload_colors()
