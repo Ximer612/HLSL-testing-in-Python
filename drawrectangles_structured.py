@@ -15,16 +15,14 @@ def add_rectangle_buffer(r,g,b,x,y,w,h):
     pass
 
 def upload_rectangles(rectangles):
-    # length of rectangles * single rectangle variables number * 4 bytes + background color variables length * 4 bytes
-
-    rectangle_variables = 7 #rgb 3 xy 2 wh 2
+    rectangle_variables = 3+2+2 #rgb 3 xy 2 wh 2
 
     rectangle_buffer = Buffer(len(rectangles) * (rectangle_variables) * 4, HEAP_UPLOAD)
 
     for index, rectangle in enumerate(rectangles):
         rectangle_buffer.upload(struct.pack("<fffffff",rectangle[0],rectangle[1],rectangle[2],rectangle[3],rectangle[4],rectangle[5],rectangle[6]), (index) * rectangle_variables * 4)
     
-    fast_buffer = Buffer(rectangle_buffer.size, HEAP_DEFAULT, format=R32G32B32A32_FLOAT)
+    fast_buffer = Buffer(rectangle_buffer.size, HEAP_DEFAULT, stride=len(rectangles))
     rectangle_buffer.copy_to(fast_buffer)
 
     return fast_buffer
@@ -33,7 +31,7 @@ def upload_config(rectangles,background_color:tuple[3]):
     config_buffer = Buffer( (1 + 3) * 4, HEAP_UPLOAD)
     config_buffer.upload(struct.pack("<Ifff",len(rectangles),background_color[0],background_color[1],background_color[2]))
 
-    fast_buffer = Buffer(config_buffer.size, HEAP_DEFAULT, format=R32G32B32A32_FLOAT)
+    fast_buffer = Buffer(config_buffer.size, HEAP_DEFAULT, stride=1)
     config_buffer.copy_to(fast_buffer)
 
     return fast_buffer
@@ -80,15 +78,15 @@ def key_event(window,key,scancode,action,mods):
     global pos_x
     global pos_y
 
-    speed = 25
+    speed = 5
 
-    if action == glfw.PRESS and key == glfw.KEY_W:
+    if key == glfw.KEY_W and (action == glfw.PRESS or action == glfw.REPEAT):
         pos_y -= speed
-    if action == glfw.PRESS and key == glfw.KEY_S:
+    if key == glfw.KEY_S and (action == glfw.PRESS or action == glfw.REPEAT):
         pos_y += speed
-    if action == glfw.PRESS and key == glfw.KEY_A:
+    if key == glfw.KEY_A and (action == glfw.PRESS or action == glfw.REPEAT):
         pos_x -= speed
-    if action == glfw.PRESS and key == glfw.KEY_D:
+    if key == glfw.KEY_D and (action == glfw.PRESS or action == glfw.REPEAT):
         pos_x += speed
 
 while not glfw.window_should_close(window):
