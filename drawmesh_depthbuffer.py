@@ -70,7 +70,7 @@ def read_shader(file_path):
         shader_file = file.read()
 
     return hlsl.compile(shader_file)
-
+ 
 mesh = trimesh.creation.box((2, 2, 2))
 
 stats_buffer = Buffer(64, HEAP_DEFAULT, format = R32_UINT)
@@ -146,8 +146,8 @@ while not glfw.window_should_close(window):
     
     clear_depth_compute.dispatch(target.width // 8, target.height // 8, 1)
     clear_compute.dispatch(target.width // 8, target.height // 8, 1)
-    early_depth_pass_compute.dispatch(target.width //8, target.height // 8, math.ceil(12/8))
-    compute.dispatch(target.width //8, target.height // 8, math.ceil(12/8))
+    early_depth_pass_compute.dispatch(target.width //8, target.height // 8, math.ceil( len(mesh.faces)/8 ))
+    compute.dispatch(target.width //8, target.height // 8, math.ceil( len(mesh.faces)/8 ))
 
     swapchain.present(target)
     stats_buffer.copy_to(stats_buffer_readback)
